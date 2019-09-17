@@ -1,5 +1,9 @@
 # Code location
-All files are located in the projects repository.
+All files are located in the projects repository found on GitHub at [CS7641](https://github.com/mahonbaldwin/CS7641).
+
+# Code organization
+The code specific to the first project is in the `p1` directory, but it depends on code found at the root of the project. Other directories include `resources` which contains all of the data files used. Located with the data files are the `.names.csv`
+files that indicates who gathered the data.
 
 # Code Requirements
 The code requires the pyhton packages from `requirements.txt` to be installed.
