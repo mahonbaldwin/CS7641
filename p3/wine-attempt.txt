@@ -1,0 +1,103 @@
+#%% md
+
+### wine data
+This section analyzes the wine data.
+
+#%%
+
+wn_data = pd.read_csv("../resources/winequality/winequality-combined.csv")
+
+
+#%%
+
+wn_km, wn_x_train_scaled, wn_x_test_scaled, wn_y_train, wn_y_test = scale_and_train(12345, .65, wn_data, 'quality', 7)
+
+#%%
+
+wn_predictions = wn_km.predict(wn_x_test_scaled)
+
+
+
+#%%
+
+def match_pairs(predictions, y_tests):
+    matches = {}
+    for i in range(len(predictions)):
+        y = y_tests[i]
+        p = predictions[i]
+        matches[(y, p)] = matches.get((y, p), 0) + 1
+    return matches
+
+
+#%%
+
+wn_matches = match_pairs(wn_predictions, wn_y_test)
+
+#%%
+
+np.unique(wn_y_test)
+
+#%%
+
+# "borrowed" from https://stackoverflow.com/questions/12935194/combinations-between-two-lists
+
+# xx = [zip(x,wn_y_test) for x in itertools.permutations(wn_predictions,len(wn_y_test))]
+
+#%%
+
+scores = {}
+
+for perm in list(itertools.permutations(range(7),7)):
+    sum = 0
+    for i in range(len(perm)):
+        a = i + 3
+        p = perm[i] + 3
+        sum = sum + wn_matches.get((a, p), 0)
+    scores[perm] = sum
+
+
+#%%
+
+# borrowed from https://stackoverflow.com/questions/268272/getting-key-with-maximum-value-in-dictionary
+max_key = max(scores, key=scores.get)
+
+#%%
+
+max_key_p = list(map(lambda x: x + 3, max_key))
+
+#%%
+
+wn_predictions_p = []
+
+for i in wn_predictions:
+    if i == max_key_p[0]:
+        wn_predictions_p.append(3)
+    elif i == max_key_p[1]:
+        wn_predictions_p.append(4)
+    elif i == max_key_p[2]:
+        wn_predictions_p.append(5)
+    elif i == max_key_p[3]:
+        wn_predictions_p.append(6)
+    elif i == max_key_p[4]:
+        wn_predictions_p.append(7)
+    elif i == max_key_p[5]:
+        wn_predictions_p.append(8)
+    elif i == max_key_p[6]:
+        wn_predictions_p.append(9)
+
+#%%
+
+wn_predictions_p
+
+#%%
+
+wn_diverging_indecies = error_indices(wn_predictions_p, wn_y_test)
+
+
+#%%
+
+(len(wn_predictions_p)-len(wn_diverging_indecies))/len(wn_predictions_p)
+
+#%%
+
+wn_diverging_indecies
